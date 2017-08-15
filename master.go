@@ -12,64 +12,87 @@ func newMasterCollector(httpClient *httpClient) prometheus.Collector {
 		gauge("master", "cpus", "Current CPU resources in cluster.", "type"): func(m metricMap, c prometheus.Collector) error {
 			total, ok := m["master/cpus_total"]
 			used, ok := m["master/cpus_used"]
+			percent, ok := m["master/cpus_percent"]
 			if !ok {
 				return notFoundInMap
 			}
 			c.(*prometheus.GaugeVec).WithLabelValues("free").Set(total - used)
 			c.(*prometheus.GaugeVec).WithLabelValues("used").Set(used)
+			c.(*prometheus.GaugeVec).WithLabelValues("percent").Set(percent)
 			return nil
 		},
 		gauge("master", "cpus_revocable", "Current revocable CPU resources in cluster.", "type"): func(m metricMap, c prometheus.Collector) error {
 			total, ok := m["master/cpus_revocable_total"]
 			used, ok := m["master/cpus_revocable_used"]
+			percent, ok := m["master/cpus_revocable_percent"]
 			if !ok {
 				return notFoundInMap
 			}
 			c.(*prometheus.GaugeVec).WithLabelValues("free").Set(total - used)
 			c.(*prometheus.GaugeVec).WithLabelValues("used").Set(used)
+			c.(*prometheus.GaugeVec).WithLabelValues("percent").Set(percent)
 			return nil
 		},
 		gauge("master", "mem", "Current memory resources in cluster.", "type"): func(m metricMap, c prometheus.Collector) error {
 			total, ok := m["master/mem_total"]
 			used, ok := m["master/mem_used"]
+			percent, ok := m["master/mem_percent"]
 			if !ok {
 				return notFoundInMap
 			}
 			c.(*prometheus.GaugeVec).WithLabelValues("free").Set(total - used)
 			c.(*prometheus.GaugeVec).WithLabelValues("used").Set(used)
+			c.(*prometheus.GaugeVec).WithLabelValues("percent").Set(percent)
 			return nil
 		},
 		gauge("master", "mem_revocable", "Current revocable memory resources in cluster.", "type"): func(m metricMap, c prometheus.Collector) error {
 			total, ok := m["master/mem_revocable_total"]
 			used, ok := m["master/mem_revocable_used"]
+			percent, ok := m["master/mem_revocable_percent"]
 			if !ok {
 				return notFoundInMap
 			}
 			c.(*prometheus.GaugeVec).WithLabelValues("free").Set(total - used)
 			c.(*prometheus.GaugeVec).WithLabelValues("used").Set(used)
+			c.(*prometheus.GaugeVec).WithLabelValues("percent").Set(percent)
 			return nil
 		},
 		gauge("master", "disk", "Current disk resources in cluster.", "type"): func(m metricMap, c prometheus.Collector) error {
 			total, ok := m["master/disk_total"]
 			used, ok := m["master/disk_used"]
+			percent, ok := m["master/disk_percent"]
 			if !ok {
 				return notFoundInMap
 			}
 			c.(*prometheus.GaugeVec).WithLabelValues("free").Set(total - used)
 			c.(*prometheus.GaugeVec).WithLabelValues("used").Set(used)
+			c.(*prometheus.GaugeVec).WithLabelValues("percent").Set(percent)
 			return nil
 		},
 		gauge("master", "disk_revocable", "Current disk resources in cluster.", "type"): func(m metricMap, c prometheus.Collector) error {
 			total, ok := m["master/disk_revocable_total"]
 			used, ok := m["master/disk_revocable_used"]
+			percent, ok := m["master/disk_revocable_percent"]
 			if !ok {
 				return notFoundInMap
 			}
 			c.(*prometheus.GaugeVec).WithLabelValues("free").Set(total - used)
 			c.(*prometheus.GaugeVec).WithLabelValues("used").Set(used)
+			c.(*prometheus.GaugeVec).WithLabelValues("percent").Set(percent)
 			return nil
 		},
-
+		gauge("master", "gpus", "Current gpu resources in cluster.", "type"): func(m metricMap, c prometheus.Collector) error {
+			total, ok := m["master/gpus_total"]
+			used, ok := m["master/gpus_used"]
+			percent, ok := m["master/gpus_percent"]
+			if !ok {
+				return notFoundInMap
+			}
+			c.(*prometheus.GaugeVec).WithLabelValues("free").Set(total - used)
+			c.(*prometheus.GaugeVec).WithLabelValues("used").Set(used)
+			c.(*prometheus.GaugeVec).WithLabelValues("percent").Set(percent)
+			return nil
+		},
 		// Master stats about uptime and election state
 		prometheus.NewGauge(prometheus.GaugeOpts{
 			Namespace: "mesos",
