@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/prometheus/client_golang/prometheus"
+	"fmt"
 )
 
 type (
@@ -146,8 +147,26 @@ func newMetricCollector(httpClient *httpClient, metrics map[prometheus.Collector
 	return &metricCollector{httpClient, metrics}
 }
 
+func disallowRedirect(redirRequest *http.Request, via []*http.Request) error {
+	return http.ErrUseLastResponse
+}
+
+func getLeaderMasterUrl(master string) string {
+	url := strings.TrimSuffix(master, "/") + "/redirect"
+	client := &http.Client{
+		CheckRedirect: disallowRedirect,
+	}
+	resp, err := client.Head(url)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return fmt.Sprintf("http:%s", resp.Header.Get("Location"))
+}
+
 func (httpClient *httpClient) fetchAndDecode(endpoint string, target interface{}) bool {
-	url := strings.TrimSuffix(httpClient.url, "/") + endpoint
+	// Add redirect logic here.
+	leaderUrl := getLeaderMasterUrl(httpClient.url)
+	url := strings.TrimSuffix(leaderUrl, "/") + endpoint
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		log.Printf("Error creating HTTP request to %s: %s", url, err)
